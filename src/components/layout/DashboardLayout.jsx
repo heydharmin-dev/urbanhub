@@ -4,7 +4,7 @@ import Sidebar from './Sidebar'
 
 export default function DashboardLayout({ role }) {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted/50">
       <Navbar />
       <div className="flex">
         <Sidebar role={role} />

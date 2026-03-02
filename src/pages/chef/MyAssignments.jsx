@@ -5,6 +5,8 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner'
 import EmptyState from '../../components/ui/EmptyState'
 import toast from 'react-hot-toast'
 import { ClipboardList } from 'lucide-react'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
 
 const TABS = [
   { key: 'all', label: 'All' },
@@ -44,24 +46,18 @@ export default function MyAssignments() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">My Assignments</h1>
+      <h1 className="text-2xl font-bold text-foreground">My Assignments</h1>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-gray-100 rounded-lg p-1 w-fit">
-        {TABS.map(tab => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-              activeTab === tab.key
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList>
+          {TABS.map(tab => (
+            <TabsTrigger key={tab.key} value={tab.key}>
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       {loading ? (
         <div className="flex justify-center py-12"><LoadingSpinner size="lg" /></div>
@@ -80,18 +76,21 @@ export default function MyAssignments() {
               actions={
                 assignment.status === 'pending' ? (
                   <>
-                    <button
+                    <Button
                       onClick={() => handleAccept(assignment.id)}
-                      className="bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-1.5 rounded-lg transition"
+                      size="sm"
+                      className="bg-green-500 hover:bg-green-600"
                     >
                       Accept
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="ghost"
                       onClick={() => handleDecline(assignment.id)}
-                      className="text-sm text-red-500 hover:text-red-600 font-medium px-4 py-1.5"
+                      size="sm"
+                      className="text-red-500 hover:text-red-600"
                     >
                       Decline
-                    </button>
+                    </Button>
                   </>
                 ) : null
               }

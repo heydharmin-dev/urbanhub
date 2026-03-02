@@ -8,6 +8,9 @@ import AssignmentCard from '../../components/job/AssignmentCard'
 import LoadingSpinner from '../../components/ui/LoadingSpinner'
 import toast from 'react-hot-toast'
 import { ClipboardList, CheckCircle, AlertCircle, XCircle, Briefcase } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function ChefDashboard() {
   const { profile, chefProfile } = useAuth()
@@ -84,62 +87,68 @@ export default function ChefDashboard() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Provider Dashboard</h1>
+        <h1 className="text-2xl font-bold text-foreground">Provider Dashboard</h1>
         <div className="flex items-center gap-2 mt-1">
-          <span className="text-gray-500">Status:</span>
+          <span className="text-muted-foreground">Status:</span>
           <ChefStatusBadge status={status || 'pending'} />
           {chefProfile?.service_category && <ServiceCategoryBadge categoryId={chefProfile.service_category} size="sm" />}
         </div>
       </div>
 
       {status === 'pending' && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6 flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-yellow-600 shrink-0 mt-0.5" />
-          <div>
+        <Alert className="mb-6 border-yellow-200 bg-yellow-50">
+          <AlertCircle className="h-5 w-5 text-yellow-600" />
+          <AlertDescription>
             <h3 className="font-medium text-yellow-800">Profile Under Review</h3>
             <p className="text-sm text-yellow-700 mt-1">
               Your profile is currently being reviewed by our admin team. You will be notified once verified. This usually takes 24-48 hours.
             </p>
-          </div>
-        </div>
+          </AlertDescription>
+        </Alert>
       )}
 
       {status === 'rejected' && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3">
-          <XCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
-          <div>
+        <Alert className="mb-6 border-red-200 bg-red-50" variant="destructive">
+          <XCircle className="h-5 w-5 text-red-600" />
+          <AlertDescription>
             <h3 className="font-medium text-red-800">Profile Not Approved</h3>
             <p className="text-sm text-red-700 mt-1">
               {chefProfile?.admin_notes || 'Your profile was not approved. Please update your profile and contact support.'}
             </p>
-          </div>
-        </div>
+          </AlertDescription>
+        </Alert>
       )}
 
       {status === 'approved' && (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            <div className="bg-white rounded-xl p-5 border border-gray-200">
-              <ClipboardList className="h-8 w-8 text-yellow-500 mb-2" />
-              <p className="text-2xl font-bold text-gray-900">{stats.pending}</p>
-              <p className="text-sm text-gray-500">Pending Assignments</p>
-            </div>
-            <div className="bg-white rounded-xl p-5 border border-gray-200">
-              <Briefcase className="h-8 w-8 text-green-500 mb-2" />
-              <p className="text-2xl font-bold text-gray-900">{stats.active}</p>
-              <p className="text-sm text-gray-500">Active Assignments</p>
-            </div>
-            <div className="bg-white rounded-xl p-5 border border-gray-200">
-              <CheckCircle className="h-8 w-8 text-blue-500 mb-2" />
-              <p className="text-2xl font-bold text-gray-900">{stats.completed}</p>
-              <p className="text-sm text-gray-500">Completed</p>
-            </div>
+            <Card>
+              <CardContent className="p-5">
+                <ClipboardList className="h-8 w-8 text-yellow-500 mb-2" />
+                <p className="text-2xl font-bold text-foreground">{stats.pending}</p>
+                <p className="text-sm text-muted-foreground">Pending Assignments</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-5">
+                <Briefcase className="h-8 w-8 text-green-500 mb-2" />
+                <p className="text-2xl font-bold text-foreground">{stats.active}</p>
+                <p className="text-sm text-muted-foreground">Active Assignments</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-5">
+                <CheckCircle className="h-8 w-8 text-blue-500 mb-2" />
+                <p className="text-2xl font-bold text-foreground">{stats.completed}</p>
+                <p className="text-sm text-muted-foreground">Completed</p>
+              </CardContent>
+            </Card>
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">Pending Assignments</h2>
-              <Link to="/chef/assignments" className="text-sm text-indigo-500 hover:text-indigo-600">
+              <h2 className="text-lg font-semibold text-foreground">Pending Assignments</h2>
+              <Link to="/chef/assignments" className="text-sm text-primary hover:text-primary/80">
                 View all &rarr;
               </Link>
             </div>
@@ -148,7 +157,7 @@ export default function ChefDashboard() {
                 <LoadingSpinner />
               </div>
             ) : pendingAssignments.length === 0 ? (
-              <p className="text-gray-400 text-center py-8">No pending assignments</p>
+              <p className="text-muted-foreground text-center py-8">No pending assignments</p>
             ) : (
               <div className="space-y-4">
                 {pendingAssignments.map((assignment) => (
@@ -157,18 +166,21 @@ export default function ChefDashboard() {
                     assignment={assignment}
                     actions={
                       <>
-                        <button
+                        <Button
                           onClick={() => handleAccept(assignment.id)}
-                          className="bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-1.5 rounded-lg transition"
+                          size="sm"
+                          className="bg-green-500 hover:bg-green-600"
                         >
                           Accept
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                          variant="ghost"
                           onClick={() => handleDecline(assignment.id)}
-                          className="text-sm text-red-500 hover:text-red-600 font-medium px-4 py-1.5"
+                          size="sm"
+                          className="text-red-500 hover:text-red-600"
                         >
                           Decline
-                        </button>
+                        </Button>
                       </>
                     }
                   />

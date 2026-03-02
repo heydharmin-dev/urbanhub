@@ -3,6 +3,7 @@ import {
   LayoutDashboard, User, ClipboardList, Users,
   BarChart3, Building2, PlusCircle, Briefcase, Wrench, Grid3X3
 } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 const navItems = {
   restaurant: [
@@ -29,18 +30,19 @@ export default function Sidebar({ role }) {
   const items = navItems[role] || []
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 min-h-[calc(100vh-4rem)] hidden lg:block">
+    <aside className="w-64 bg-background border-r min-h-[calc(100vh-4rem)] hidden lg:block">
       <nav className="p-4 space-y-1">
         {items.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2.5 rounded-lg font-medium transition ${
+              cn(
+                'flex items-center gap-3 px-4 py-2.5 rounded-lg font-medium transition',
                 isActive
-                  ? 'bg-indigo-50 text-indigo-600'
-                  : 'text-gray-600 hover:bg-gray-50'
-              }`
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-muted-foreground hover:bg-accent'
+              )
             }
           >
             <item.icon className="h-5 w-5" />

@@ -4,6 +4,10 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner'
 import EmptyState from '../../components/ui/EmptyState'
 import toast from 'react-hot-toast'
 import { Users, Mail, Phone, Shield, Ban, CheckCircle } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 
 export default function ManageUsers() {
   const [users, setUsers] = useState([])
@@ -47,15 +51,15 @@ export default function ManageUsers() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Manage Users</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">Manage Users</h1>
 
       <div className="mb-4">
-        <input
+        <Input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by name or email..."
-          className="w-full max-w-md px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+          className="max-w-md"
         />
       </div>
 
@@ -66,83 +70,82 @@ export default function ManageUsers() {
       ) : filtered.length === 0 ? (
         <EmptyState icon={Users} title="No users found" description="No users match your search." />
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b">
-                <tr>
-                  <th className="text-left px-5 py-3 text-sm font-medium text-gray-500">Name</th>
-                  <th className="text-left px-5 py-3 text-sm font-medium text-gray-500">Email</th>
-                  <th className="text-left px-5 py-3 text-sm font-medium text-gray-500">Phone</th>
-                  <th className="text-left px-5 py-3 text-sm font-medium text-gray-500">Role</th>
-                  <th className="text-left px-5 py-3 text-sm font-medium text-gray-500">Status</th>
-                  <th className="text-left px-5 py-3 text-sm font-medium text-gray-500">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filtered.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
-                    <td className="px-5 py-3 text-sm font-medium text-gray-900">{user.full_name}</td>
-                    <td className="px-5 py-3 text-sm text-gray-500 flex items-center gap-1">
-                      <Mail className="h-3.5 w-3.5" />
-                      {user.email}
-                    </td>
-                    <td className="px-5 py-3 text-sm text-gray-500">
-                      {user.phone ? (
-                        <span className="flex items-center gap-1">
-                          <Phone className="h-3.5 w-3.5" />
-                          {user.phone}
-                        </span>
-                      ) : '-'}
-                    </td>
-                    <td className="px-5 py-3">
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
-                        user.role === 'chef' ? 'bg-indigo-100 text-indigo-700' :
-                        user.role === 'restaurant' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
-                      }`}>
-                        <Shield className="h-3 w-3" />
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3">
-                      {user.is_blocked ? (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
-                          Blocked
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                          Active
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-5 py-3">
-                      <button
-                        onClick={() => toggleBlock(user.id, user.is_blocked)}
-                        className={`flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-lg transition ${
-                          user.is_blocked
-                            ? 'bg-green-50 text-green-600 hover:bg-green-100'
-                            : 'bg-red-50 text-red-600 hover:bg-red-100'
-                        }`}
-                      >
-                        {user.is_blocked ? (
-                          <>
-                            <CheckCircle className="h-3.5 w-3.5" />
-                            Unblock
-                          </>
-                        ) : (
-                          <>
-                            <Ban className="h-3.5 w-3.5" />
-                            Block
-                          </>
-                        )}
-                      </button>
-                    </td>
+        <Card>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-muted/50 border-b border-border">
+                  <tr>
+                    <th className="text-left px-5 py-3 text-sm font-medium text-muted-foreground">Name</th>
+                    <th className="text-left px-5 py-3 text-sm font-medium text-muted-foreground">Email</th>
+                    <th className="text-left px-5 py-3 text-sm font-medium text-muted-foreground">Phone</th>
+                    <th className="text-left px-5 py-3 text-sm font-medium text-muted-foreground">Role</th>
+                    <th className="text-left px-5 py-3 text-sm font-medium text-muted-foreground">Status</th>
+                    <th className="text-left px-5 py-3 text-sm font-medium text-muted-foreground">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {filtered.map((user) => (
+                    <tr key={user.id} className="hover:bg-muted/50">
+                      <td className="px-5 py-3 text-sm font-medium text-foreground">{user.full_name}</td>
+                      <td className="px-5 py-3 text-sm text-muted-foreground flex items-center gap-1">
+                        <Mail className="h-3.5 w-3.5" />
+                        {user.email}
+                      </td>
+                      <td className="px-5 py-3 text-sm text-muted-foreground">
+                        {user.phone ? (
+                          <span className="flex items-center gap-1">
+                            <Phone className="h-3.5 w-3.5" />
+                            {user.phone}
+                          </span>
+                        ) : '-'}
+                      </td>
+                      <td className="px-5 py-3">
+                        <Badge variant={
+                          user.role === 'chef' ? 'default' :
+                          user.role === 'restaurant' ? 'secondary' : 'outline'
+                        } className="gap-1">
+                          <Shield className="h-3 w-3" />
+                          {user.role}
+                        </Badge>
+                      </td>
+                      <td className="px-5 py-3">
+                        {user.is_blocked ? (
+                          <Badge variant="destructive">Blocked</Badge>
+                        ) : (
+                          <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Active</Badge>
+                        )}
+                      </td>
+                      <td className="px-5 py-3">
+                        <Button
+                          variant={user.is_blocked ? 'outline' : 'ghost'}
+                          size="sm"
+                          onClick={() => toggleBlock(user.id, user.is_blocked)}
+                          className={user.is_blocked
+                            ? 'text-green-600 hover:bg-green-50'
+                            : 'text-red-600 hover:bg-red-50'
+                          }
+                        >
+                          {user.is_blocked ? (
+                            <>
+                              <CheckCircle className="h-3.5 w-3.5 mr-1" />
+                              Unblock
+                            </>
+                          ) : (
+                            <>
+                              <Ban className="h-3.5 w-3.5 mr-1" />
+                              Block
+                            </>
+                          )}
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   )

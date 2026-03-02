@@ -1,21 +1,23 @@
-const statusStyles = {
-  pending: 'bg-yellow-100 text-yellow-700',
-  approved: 'bg-green-100 text-green-700',
-  rejected: 'bg-red-100 text-red-700',
-  suspended: 'bg-gray-100 text-gray-700',
+import { Badge } from "@/components/ui/badge"
+
+const statusVariants = {
+  pending: "bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-50",
+  approved: "bg-green-50 text-green-700 border-green-200 hover:bg-green-50",
+  rejected: "bg-red-50 text-red-700 border-red-200 hover:bg-red-50",
+  suspended: "bg-muted text-muted-foreground border-muted hover:bg-muted",
 }
 
 const statusLabels = {
-  pending: 'Pending Review',
-  approved: 'Verified',
-  rejected: 'Rejected',
-  suspended: 'Suspended',
+  pending: "Pending Review",
+  approved: "Verified",
+  rejected: "Rejected",
+  suspended: "Suspended",
 }
 
 export default function ChefStatusBadge({ status }) {
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusStyles[status] || statusStyles.pending}`}>
+    <Badge variant="outline" className={statusVariants[status] || statusVariants.pending}>
       {statusLabels[status] || status}
-    </span>
+    </Badge>
   )
 }

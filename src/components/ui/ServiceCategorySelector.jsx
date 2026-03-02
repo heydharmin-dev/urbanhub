@@ -1,9 +1,11 @@
-import { SERVICE_CATEGORIES, getCategoryColors } from '../../lib/serviceCategories'
+import { cn } from "@/lib/utils"
+import { Label } from "@/components/ui/label"
+import { SERVICE_CATEGORIES, getCategoryColors } from "@/lib/serviceCategories"
 import {
   ChefHat, SprayCan, Baby, HeartHandshake, Flower2, Scissors,
   Wrench, Zap, Hammer, Paintbrush, Bug, Settings, Dumbbell,
   PawPrint, Car, Shield, Flower, Shirt, Truck, PartyPopper
-} from 'lucide-react'
+} from "lucide-react"
 
 const ICON_MAP = {
   ChefHat, SprayCan, Baby, HeartHandshake, Flower2, Scissors,
@@ -11,15 +13,15 @@ const ICON_MAP = {
   PawPrint, Car, Shield, Flower, Shirt, Truck, PartyPopper,
 }
 
-export default function ServiceCategorySelector({ value, onChange, label = 'Service Category *', compact = false }) {
+export default function ServiceCategorySelector({ value, onChange, label = "Service Category *", compact = false }) {
   if (compact) {
     return (
       <div>
-        {label && <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>}
+        {label && <Label className="mb-1.5">{label}</Label>}
         <select
-          value={value || ''}
+          value={value || ""}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition appearance-none"
+          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >
           <option value="">Select a service category</option>
           {SERVICE_CATEGORIES.map(cat => (
@@ -32,7 +34,7 @@ export default function ServiceCategorySelector({ value, onChange, label = 'Serv
 
   return (
     <div>
-      {label && <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>}
+      {label && <Label className="mb-2">{label}</Label>}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
         {SERVICE_CATEGORIES.map(cat => {
           const colors = getCategoryColors(cat.color)
@@ -44,14 +46,15 @@ export default function ServiceCategorySelector({ value, onChange, label = 'Serv
               key={cat.id}
               type="button"
               onClick={() => onChange(cat.id)}
-              className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition text-center ${
+              className={cn(
+                "flex flex-col items-center gap-1.5 p-3 rounded-lg border-2 transition text-center",
                 isSelected
                   ? `${colors.bg} ${colors.border} ${colors.text}`
-                  : 'border-gray-200 hover:border-gray-300 text-gray-600 hover:bg-gray-50'
-              }`}
+                  : "border-border hover:border-muted-foreground/30 text-muted-foreground hover:bg-muted"
+              )}
             >
               {IconComponent && (
-                <IconComponent className={`h-6 w-6 ${isSelected ? colors.icon : 'text-gray-400'}`} />
+                <IconComponent className={cn("h-6 w-6", isSelected ? colors.icon : "text-muted-foreground/50")} />
               )}
               <span className="text-xs font-medium leading-tight">{cat.name}</span>
             </button>

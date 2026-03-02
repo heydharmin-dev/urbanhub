@@ -8,7 +8,7 @@ export default function ChefRegisterPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <LoadingSpinner size="lg" />
       </div>
     )
@@ -19,7 +19,7 @@ export default function ChefRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4 py-8">
       <ChefRegisterForm />
     </div>
   )

@@ -8,6 +8,11 @@ import EmptyState from '../../components/ui/EmptyState'
 import Modal from '../../components/ui/Modal'
 import toast from 'react-hot-toast'
 import { Wrench, MapPin, Clock, DollarSign, CheckCircle, XCircle, Ban, Eye, FileText } from 'lucide-react'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
 
 const TABS = [
   { key: 'pending', label: 'Pending' },
@@ -128,30 +133,24 @@ export default function ManageChefs() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Manage Providers</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">Manage Providers</h1>
 
       <div className="flex flex-wrap items-center gap-4 mb-6">
         <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+          className="px-4 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none">
           <option value="all">All Categories</option>
           {SERVICE_CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
 
-        <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
-          {TABS.map(tab => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap transition ${
-                activeTab === tab.key
-                  ? 'bg-white text-indigo-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList>
+            {TABS.map(tab => (
+              <TabsTrigger key={tab.key} value={tab.key}>
+                {tab.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
       </div>
 
       {loading ? (
@@ -167,93 +166,102 @@ export default function ManageChefs() {
       ) : (
         <div className="space-y-4">
           {filteredChefs.map((chef) => (
-            <div key={chef.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-semibold text-gray-900 text-lg">{chef.profiles?.full_name}</h3>
-                    <ChefStatusBadge status={chef.verification_status} />
-                    {chef.service_category && <ServiceCategoryBadge categoryId={chef.service_category} size="xs" />}
+            <Card key={chef.id}>
+              <CardContent className="p-5">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="font-semibold text-foreground text-lg">{chef.profiles?.full_name}</h3>
+                      <ChefStatusBadge status={chef.verification_status} />
+                      {chef.service_category && <ServiceCategoryBadge categoryId={chef.service_category} size="xs" />}
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Wrench className="h-4 w-4" />
+                        {chef.specialty}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MapPin className="h-4 w-4" />
+                        {chef.location}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-4 w-4" />
+                        {chef.experience_years}y exp
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <DollarSign className="h-4 w-4" />
+                        {chef.price_per_hour ? `$${chef.price_per_hour}/hr` : `$${chef.price_per_day}/day`}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground/70 mt-1">
+                      {chef.profiles?.email} {chef.profiles?.phone ? `| ${chef.profiles.phone}` : ''}
+                    </p>
+                    {chef.bio && <p className="text-sm text-muted-foreground mt-2">{chef.bio}</p>}
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-gray-500">
-                    <span className="flex items-center gap-1">
-                      <Wrench className="h-4 w-4" />
-                      {chef.specialty}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MapPin className="h-4 w-4" />
-                      {chef.location}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      {chef.experience_years}y exp
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <DollarSign className="h-4 w-4" />
-                      {chef.price_per_hour ? `$${chef.price_per_hour}/hr` : `$${chef.price_per_day}/day`}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-400 mt-1">
-                    {chef.profiles?.email} {chef.profiles?.phone ? `| ${chef.profiles.phone}` : ''}
-                  </p>
-                  {chef.bio && <p className="text-sm text-gray-500 mt-2">{chef.bio}</p>}
-                </div>
 
-                <div className="flex flex-wrap gap-2">
-                  {chef.document_urls?.length > 0 && (
-                    <button
-                      onClick={() => viewDocuments(chef)}
-                      className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-50"
-                    >
-                      <Eye className="h-4 w-4" />
-                      Docs ({chef.document_urls.length})
-                    </button>
-                  )}
-                  {activeTab === 'pending' && (
-                    <>
-                      <button
+                  <div className="flex flex-wrap gap-2">
+                    {chef.document_urls?.length > 0 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => viewDocuments(chef)}
+                      >
+                        <Eye className="h-4 w-4 mr-1" />
+                        Docs ({chef.document_urls.length})
+                      </Button>
+                    )}
+                    {activeTab === 'pending' && (
+                      <>
+                        <Button
+                          size="sm"
+                          onClick={() => handleApprove(chef.id)}
+                          className="bg-green-500 hover:bg-green-600"
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          Approve
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleReject(chef.id)}
+                        >
+                          <XCircle className="h-4 w-4 mr-1" />
+                          Reject
+                        </Button>
+                      </>
+                    )}
+                    {activeTab === 'approved' && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleSuspend(chef.id)}
+                      >
+                        <Ban className="h-4 w-4 mr-1" />
+                        Suspend
+                      </Button>
+                    )}
+                    {(activeTab === 'rejected' || activeTab === 'suspended') && (
+                      <Button
+                        size="sm"
                         onClick={() => handleApprove(chef.id)}
-                        className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium bg-green-500 text-white rounded-lg hover:bg-green-600"
+                        className="bg-green-500 hover:bg-green-600"
                       >
-                        <CheckCircle className="h-4 w-4" />
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => handleReject(chef.id)}
-                        className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium bg-red-500 text-white rounded-lg hover:bg-red-600"
-                      >
-                        <XCircle className="h-4 w-4" />
-                        Reject
-                      </button>
-                    </>
-                  )}
-                  {activeTab === 'approved' && (
-                    <button
-                      onClick={() => handleSuspend(chef.id)}
-                      className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                        <CheckCircle className="h-4 w-4 mr-1" />
+                        Re-approve
+                      </Button>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDelete(chef.id)}
+                      className="text-red-500 border-red-200 hover:bg-red-50"
                     >
-                      <Ban className="h-4 w-4" />
-                      Suspend
-                    </button>
-                  )}
-                  {(activeTab === 'rejected' || activeTab === 'suspended') && (
-                    <button
-                      onClick={() => handleApprove(chef.id)}
-                      className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium bg-green-500 text-white rounded-lg hover:bg-green-600"
-                    >
-                      <CheckCircle className="h-4 w-4" />
-                      Re-approve
-                    </button>
-                  )}
-                  <button
-                    onClick={() => handleDelete(chef.id)}
-                    className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-red-500 border border-red-200 rounded-lg hover:bg-red-50"
-                  >
-                    Delete
-                  </button>
+                      Delete
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}
@@ -262,28 +270,30 @@ export default function ManageChefs() {
       <Modal isOpen={showRejectModal} onClose={() => setShowRejectModal(false)} title="Reject Provider" size="sm">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Reason (optional)</label>
-            <textarea
+            <Label className="mb-1">Reason (optional)</Label>
+            <Textarea
               rows={3}
               value={rejectNotes}
               onChange={(e) => setRejectNotes(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none"
+              className="resize-none"
               placeholder="Reason for rejection..."
             />
           </div>
           <div className="flex gap-3">
-            <button
+            <Button
+              variant="outline"
               onClick={() => setShowRejectModal(false)}
-              className="flex-1 border border-gray-300 py-2 rounded-lg font-medium hover:bg-gray-50"
+              className="flex-1"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="destructive"
               onClick={confirmReject}
-              className="flex-1 bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600"
+              className="flex-1"
             >
               Reject
-            </button>
+            </Button>
           </div>
         </div>
       </Modal>
@@ -297,11 +307,11 @@ export default function ManageChefs() {
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
+              className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg hover:bg-muted transition"
             >
-              <FileText className="h-5 w-5 text-indigo-500" />
-              <span className="text-sm font-medium text-gray-700">Document {i + 1}</span>
-              <span className="text-sm text-indigo-500 ml-auto">View →</span>
+              <FileText className="h-5 w-5 text-primary" />
+              <span className="text-sm font-medium text-foreground">Document {i + 1}</span>
+              <span className="text-sm text-primary ml-auto">View &rarr;</span>
             </a>
           ))}
         </div>

@@ -1,20 +1,20 @@
 import { Link } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
 import { Home } from 'lucide-react'
 
 export default function NotFoundPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="text-center">
-        <h1 className="text-6xl font-bold text-indigo-500 mb-4">404</h1>
-        <h2 className="text-2xl font-semibold text-gray-900 mb-2">Page Not Found</h2>
-        <p className="text-gray-500 mb-8">The page you're looking for doesn't exist.</p>
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold transition"
-        >
-          <Home className="h-5 w-5" />
-          Go Home
-        </Link>
+        <h1 className="text-6xl font-bold text-primary mb-4">404</h1>
+        <h2 className="text-2xl font-semibold text-foreground mb-2">Page Not Found</h2>
+        <p className="text-muted-foreground mb-8">The page you're looking for doesn't exist.</p>
+        <Button asChild>
+          <Link to="/">
+            <Home className="h-4 w-4 mr-2" />
+            Go Home
+          </Link>
+        </Button>
       </div>
     </div>
   )
